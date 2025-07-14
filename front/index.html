@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 class="mb-4">Weather Query</h1>
+
+    <form method="post" class="mb-4">
+        {% csrf_token %}
+        <div class="input-group">
+            <input type="text" name="city" class="form-control" placeholder="Enter city name" required>
+            <button type="submit" class="btn btn-primary">Get Weather</button>
+        </div>
+    </form>
+
+    {% if weather %}
+    <div class="card mb-4">
+        <div class="card-body">
+            <h2>{{ weather.city_name }}</h2>
+            <div class="d-flex align-items-center">
+                {% if weather.icon_code %}
+                <img src="http://openweathermap.org/img/w/{{ weather.icon_code }}.png" alt="Weather icon">
+                {% endif %}
+                <div>
+                    <p class="mb-1"><strong>Temperature:</strong> {{ weather.temperature }}°C</p>
+                    <p class="mb-1"><strong>Description:</strong> {{ weather.description|title }}</p>
+                    <p class="mb-1"><strong>Humidity:</strong> {{ weather.humidity }}%</p>
+                    <p class="mb-1"><strong>Wind Speed:</strong> {{ weather.wind_speed }} m/s</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% elif error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <h2 class="mt-5">Recent Queries</h2>
+    <ul class="list-group">
+        {% for query in history %}
+        <li class="list-group-item">
+            <a href="{% url 'query-detail' query.id %}">{{ query.city_name }}</a> -
+            {{ query.timestamp|date:"Y-m-d H:i" }}:
+            {{ query.temperature }}°C, {{ query.description }}
+        </li>
+        {% empty %}
+        <li class="list-group-item">No queries yet</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'weather_history' %}" class="btn btn-secondary mt-3">View Full History</a>
+{% endblock %}
