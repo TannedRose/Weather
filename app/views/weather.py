@@ -1,8 +1,6 @@
-import os
 import requests
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.views import View
-from django.http import JsonResponse
 from django.conf import settings
 from rest_framework.generics import GenericAPIView
 
